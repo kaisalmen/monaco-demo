@@ -1,22 +1,24 @@
-import "./App.css";
-import { CloseAction, ErrorAction } from "vscode-languageclient";
 import { LogLevel } from "@codingame/monaco-vscode-api";
-
-import "monaco-editor/esm/vs/editor/editor.all";
-import "monaco-editor/esm/vs/basic-languages/xml/xml.contribution";
-import "monaco-editor/esm/vs/language/json/monaco.contribution";
-// eslint-disable-next-line react-refresh/only-export-components
-export * as monaco from "monaco-editor";
-import { configureDefaultWorkerFactory } from "monaco-editor-wrapper/workers/workerLoaders";
-
-import MonacoEditor from "@monaco-editor/react";
-
-import { initServices } from "monaco-languageclient/vscode/services";
 import {
   type LanguageClientConfig,
   LanguageClientWrapper,
 } from "monaco-editor-wrapper";
 import { ConsoleLogger } from "monaco-languageclient/tools";
+import { CloseAction, ErrorAction } from "vscode-languageclient";
+
+import "monaco-editor/esm/vs/editor/editor.all";
+import "monaco-editor/esm/vs/basic-languages/xml/xml.contribution";
+import "monaco-editor/esm/vs/language/json/monaco.contribution";
+
+import * as monaco from "monaco-editor";
+import { loader } from "@monaco-editor/react";
+
+loader.config({ monaco });
+import { configureDefaultWorkerFactory } from "monaco-editor-wrapper/workers/workerLoaders";
+
+import MonacoEditor from "@monaco-editor/react";
+
+import { initServices } from "monaco-languageclient/vscode/services";
 
 await initServices({});
 configureDefaultWorkerFactory();
