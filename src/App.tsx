@@ -29,7 +29,7 @@ function App() {
   return (
     <div style={{ height: "100vh", width: "100vw" }}>
       <MonacoEditor
-        value={`<definition xmlns="https://wiz.io/XMLSchema/direct-schema">\n<criteria operator="or">\n  <criterion>\n    <textfilecontent54_test check_existence="at_least_one_exists" check="all" comment="!Example rule! -Ensure at least one file named /dir/file.config exists and matches pattern .*internal-test-pattern=value.*">\n      <textfilecontent54_object>\n        <filepath>/dir/file.config</filepath>\n        <pattern operation="pattern match">.*internal-test-pattern=value.*</pattern>\n        <instance datatype="int">1</instance>\n      </textfilecontent54_object>\n    </textfilecontent54_test>\n  </criterion>\n</criteria>\n</definition>`}
+        value=""
         onMount={() => a()}
         language="xml"
         path="inmemory://direct.xml"
