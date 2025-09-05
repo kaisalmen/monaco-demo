@@ -1,3 +1,10 @@
+import * as monaco from "monaco-editor";
+import { loader } from "@monaco-editor/react";
+
+loader.config({ monaco });
+
+import "@codingame/monaco-vscode-standalone-languages";
+
 import { LogLevel } from "@codingame/monaco-vscode-api";
 import {
   type LanguageClientConfig,
@@ -6,22 +13,23 @@ import {
 import { ConsoleLogger } from "monaco-languageclient/tools";
 import { CloseAction, ErrorAction } from "vscode-languageclient";
 
-import "monaco-editor/esm/vs/editor/editor.all";
-import "monaco-editor/esm/vs/basic-languages/xml/xml.contribution";
-import "monaco-editor/esm/vs/language/json/monaco.contribution";
-
-import * as monaco from "monaco-editor";
-import { loader } from "@monaco-editor/react";
-
-loader.config({ monaco });
 import { configureDefaultWorkerFactory } from "monaco-editor-wrapper/workers/workerLoaders";
+
 
 import MonacoEditor from "@monaco-editor/react";
 
 import { initServices } from "monaco-languageclient/vscode/services";
 
-await initServices({});
+const logger = new ConsoleLogger(LogLevel.Debug);
+await initServices({}, { logger });
 configureDefaultWorkerFactory();
+
+const code = `def print_hello():
+
+    x=5
+    print("Hello World!")
+
+print_hello()`;
 
 function App() {
   const a = useLangClientConfig();
@@ -29,10 +37,9 @@ function App() {
   return (
     <div style={{ height: "100vh", width: "100vw" }}>
       <MonacoEditor
-        value=""
+        value={code}
         onMount={() => a()}
-        language="xml"
-        path="inmemory://direct.xml"
+        language="python"
       ></MonacoEditor>
     </div>
   );
@@ -40,22 +47,21 @@ function App() {
 
 export const useLangClientConfig = () => {
   const onWebSocketConnectionOpen = async () => {
-    const logger = new ConsoleLogger(LogLevel.Trace);
     const languageClientConfig: LanguageClientConfig = {
       name: "OVAL Language Client",
       clientOptions: {
-        documentSelector: ["xml"],
+        documentSelector: ['python', 'py'],
         errorHandler: {
           error: () => ({ action: ErrorAction.Continue }),
           closed: () => ({ action: CloseAction.DoNotRestart }),
-        },
+        }
       },
       connection: {
         options: {
           $type: "WebSocketUrl",
-          url: "ws://localhost:30000/sampleServer",
+          url: "ws://localhost:30001/pyright?authorization=UserAuth",
         },
-      },
+      }
     };
     const languageClientWrapper = new LanguageClientWrapper({
       languageClientConfig,

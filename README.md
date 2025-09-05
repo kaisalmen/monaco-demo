@@ -7,5 +7,6 @@ The language client is configured against a dummy server, so you will need to st
 To start the server, run:
 
 ```bash
-yarn dev
+npm install
+npm run dev
 ```
