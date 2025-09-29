@@ -5,24 +5,24 @@ loader.config({ monaco });
 
 import "@codingame/monaco-vscode-standalone-languages";
 
+import { ConsoleLogger } from "monaco-languageclient/common";
 import { LogLevel } from "@codingame/monaco-vscode-api";
-import {
-  type LanguageClientConfig,
-  LanguageClientWrapper,
-} from "monaco-editor-wrapper";
-import { ConsoleLogger } from "monaco-languageclient/tools";
+import { type LanguageClientConfig, LanguageClientWrapper } from "monaco-languageclient/lcwrapper";
+import { MonacoVscodeApiWrapper } from "monaco-languageclient/vscodeApiWrapper";
 import { CloseAction, ErrorAction } from "vscode-languageclient";
-
-import { configureDefaultWorkerFactory } from "monaco-editor-wrapper/workers/workerLoaders";
-
-
+import { configureDefaultWorkerFactory } from "monaco-languageclient/workerFactory";
 import MonacoEditor from "@monaco-editor/react";
 
-import { initServices } from "monaco-languageclient/vscode/services";
-
-const logger = new ConsoleLogger(LogLevel.Debug);
-await initServices({}, { logger });
-configureDefaultWorkerFactory();
+const apiWrapper = new MonacoVscodeApiWrapper({
+  $type: 'classic',
+  viewsConfig: {
+    $type: 'EditorService',
+    htmlContainer: 'ReactPlaceholder'
+  },
+  logLevel: LogLevel.Debug,
+  monacoWorkerFactory: configureDefaultWorkerFactory
+});
+await apiWrapper.start();
 
 const code = `def print_hello():
 
@@ -48,7 +48,7 @@ function App() {
 export const useLangClientConfig = () => {
   const onWebSocketConnectionOpen = async () => {
     const languageClientConfig: LanguageClientConfig = {
-      name: "OVAL Language Client",
+      languageId: 'python',
       clientOptions: {
         documentSelector: ['python', 'py'],
         errorHandler: {
@@ -63,10 +63,9 @@ export const useLangClientConfig = () => {
         },
       }
     };
-    const languageClientWrapper = new LanguageClientWrapper({
-      languageClientConfig,
-      logger,
-    });
+
+    const logger = new ConsoleLogger(LogLevel.Debug);
+    const languageClientWrapper = new LanguageClientWrapper(languageClientConfig, logger);
 
     await languageClientWrapper.start();
   };
